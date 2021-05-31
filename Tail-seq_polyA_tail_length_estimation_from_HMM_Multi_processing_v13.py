@@ -2,7 +2,7 @@
 This script has two modes:
 > Mode 1:
 1. a text string which defines the prefix name of the output files (-n, required)
-2. a tex string which specifies the output directory (-d, optional)
+2. a text string which specifies the output directory (-d, optional)
 3. a reference file with annotation in bed format (-r, required)
 4. a STAR-aligned bam file (-b, required)
 5. the un-trimmed fastq file from read1 (-f1, required)
