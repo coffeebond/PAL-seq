@@ -84,16 +84,12 @@ v12 change log:
 5. Added an option ("allow_back") to initialize HMM transition matrix, either allowing non-T states going back to T-states or not allowing
 	non-T states going back to T-states (better for TAIL-seq, slightly better for PAL-seq as well.)
 
-v13 change log (20210307):
+v13 change log:
 1. Moved all global parameters to a dictionary.
 2. Changed the input format, and a parser is used.
 3. Split the all_tag output file into two files: one with tail length and the other with HMM states, which can be deleted to save space.
 4. Added an parameter "check_pa_tail" with the option to filter reads by examining if there is a poly(A) tail
 
-Other changes to be made:
-1. Find a replacement for ghmm so that the script is compatible with python3
-2. Try using multiple HMM models to call tail lengths instead of a unified model for each dataset
-3. Use object-oriented programming
 '''
 
 
