@@ -107,10 +107,6 @@ v15 change log (20220905; 20221114; 20221217):
 2. Added an option to use fish or human RNA spike as training sets (-t option).
 3. Added values of global parameters (Changed to an OrderedDict class) and input arguments to the log output file.
 
-Other changes to be made:
-1. Find a replacement for ghmm so that the script is compatible with python3
-2. Try using multiple HMM models to call tail lengths instead of a unified model for each dataset
-3. Use object-oriented programming
 '''
 
 
