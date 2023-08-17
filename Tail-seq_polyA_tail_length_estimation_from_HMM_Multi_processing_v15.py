@@ -1,4 +1,30 @@
 '''
+------ Instructions ------
+Before running the script, the following parameters need to be set within the python file:
+r1_len: length of read1 (use 40 for v3, and 52 for v4). Default: 52.
+r2_len: length of read2. Default: 255. 
+check_pa_tail: whether to use read2 fastq file to filter out reads that don't have a poly(A) tail. Default: False.
+dis2T: the number of bases from the sequencing starts in read 2 to the 3' end of the mRNA (use 7 for v3, and 0 for v4). Default: 0. 
+strand: positive strand for Tail-seq and negative strand for PAL-seq. Default: -. 
+allow_back: whether to allow HMM to transition from a downstream state back to upstream state. Default: False. 
+mixed_model: whether to use a Gausian mixed model (if not, a simple Gausian model is used). Default: True.
+
+r1_nor_start: starting position of read1 for signal normalization (use 10 for v3, and 20 for v4). Default: 20. 
+r1_nor_end: ending position of read1 for signal normalization (use 35 for v3, and 50 for v4). Default: 50. 
+bound: boundary for normalized log2 T_signal. Default: 5. 
+all_zero_limit: limit for total number of all zeros in four channels in read 2. Default: 5. 
+non_T_limit: limit for allowing non-T bases at the very 3' ends when calling tail length, due to possible uridylation. Default: 2. 
+len_r2_T_filter: length of the begining region in read 2 (after 'dist2T') to check poly(T) (when 'check_pa_tail' is 'True'). Default: 8. 
+ratio_r2_T_filter: minmal percentage of T in the begining region of read 2 (defined by 'len_r2_T_filter') to check poly(T) (when 'check_pa_tail' is 'True'). Default: 0.7. 
+
+training_max: maximal number of clusters used in the training set. Default: 50000. 
+training_min: minimal number of clusters used in the training set. Default: 5000. 
+training_ratio: ratio of reads used for training, constrained by "training_max" and "training_min". Default: 0.01. 
+
+n_threads: number of cores to use for multiprocess, if too big, memory may fail. Default: 20. 
+chunk_lines: number of lines to allocate to each core to process, if too big, memory may fail. Default: 10000. 
+chunk: give a feedback for proceessing this number of lines. Default: 1000000. 
+
 This script has three modes:
 > Mode 1:
 1. a text string which defines the prefix name of the output files (-n, required)
@@ -33,6 +59,7 @@ It outputs these files:
 	and it can be deleted in the end.
 6. A temporary file containing the HMM states of each read cycle for each cluster, which can be deleted manually.
 
+------ Change logs ------
 v2 change log:
 1. use new function 'fread' to read in file flexibly (either txt, gz or tar)
 2. only read in two columns (cluster identifier and gene_id) from bedtools output file to make it much faster
@@ -107,6 +134,10 @@ v15 change log (20220905; 20221114; 20221217):
 2. Added an option to use fish or human RNA spike as training sets (-t option).
 3. Added values of global parameters (Changed to an OrderedDict class) and input arguments to the log output file.
 
+Other changes to be made:
+1. Find a replacement for ghmm so that the script is compatible with python3
+2. Try using multiple HMM models to call tail lengths instead of a unified model for each dataset
+3. Use object-oriented programming
 '''
 
 
@@ -118,16 +149,16 @@ from collections import OrderedDict
 
 ###------global variables-----------------------------------------------------------------
 params = OrderedDict([
-	('r1_len', 52), # length of read1 (use 40 for v4, and 52 for v5)
+	('r1_len', 52), # length of read1 (use 40 for v3, and 52 for v4)
 	#'r2_len': 255, # length of read2
 	('check_pa_tail', False), # whether to use read2 fastq file to filter out reads that don't have a poly(A) tail
-	('dis2T', 0), # the number of bases from the sequencing starts in read 2 to the 3' end of the mRNA (use 7 for v4, and 0 for v5)
+	('dis2T', 0), # the number of bases from the sequencing starts in read 2 to the 3' end of the mRNA (use 7 for v3, and 0 for v4)
 	('strand', '-'), # positive strand for Tail-seq and negative strand for PAL-seq
-	('allow_back', False), # whether to allow HMM to transition from a downstream state back to upstream state
+	('allow_back', True), # whether to allow HMM to transition from a downstream state back to upstream state
 	('mixed_model', True), # whether to use a Gausian mixed model (if not, a simple Gausian model is used)
 
-	('r1_nor_start', 20), # starting position of read1 for signal normalization (use 10 for v4, and 20 for v5)
-	('r1_nor_end', 50), # ending position of read1 for signal normalization (use 35 for v4, and 50 for v5)
+	('r1_nor_start', 20), # starting position of read1 for signal normalization (use 10 for v3, and 20 for v4)
+	('r1_nor_end', 50), # ending position of read1 for signal normalization (use 35 for v3, and 50 for v4)
 	#'qc_cutoff': 0, # minimal QC score for a base that is used for signal normalization
 	('bound', 5), # boundary for normalized log2 T_signal
 	('all_zero_limit', 5), # limit for total number of all zeros in four channels in read 2
@@ -330,8 +361,6 @@ parser.add_argument('-p', '--pa_site', dest = 'p', type = str, help = 'optional 
 args = parser.parse_args()  
 
 # output file directory and prefix
-if not args.d.endswith('/'):
-	args.d = args.d + '/'
 prefix = args.d + args.n + '_'
 
 ###-------------------------------------------------	
@@ -751,23 +780,3 @@ output_median.close()
 output_mean.close()
 pwrite(f_log, 'Final: ' + timer())		
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
-		
-		
-		
-		
