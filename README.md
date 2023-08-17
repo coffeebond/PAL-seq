@@ -1,28 +1,27 @@
 ------ Instructions ------
+
 Before running the script, the following parameters need to be set within the python file:
-r1_len: length of read1 (use 40 for v3, and 52 for v4). Default: 52.
-r2_len: length of read2. Default: 255. 
-check_pa_tail: whether to use read2 fastq file to filter out reads that don't have a poly(A) tail. Default: False.
-dis2T: the number of bases from the sequencing starts in read 2 to the 3' end of the mRNA (use 7 for v3, and 0 for v4). Default: 0. 
-strand: positive strand for Tail-seq and negative strand for PAL-seq. Default: -. 
-allow_back: whether to allow HMM to transition from a downstream state back to upstream state. Default: False. 
-mixed_model: whether to use a Gausian mixed model (if not, a simple Gausian model is used). Default: True.
 
-r1_nor_start: starting position of read1 for signal normalization (use 10 for v3, and 20 for v4). Default: 20. 
-r1_nor_end: ending position of read1 for signal normalization (use 35 for v3, and 50 for v4). Default: 50. 
-bound: boundary for normalized log2 T_signal. Default: 5. 
-all_zero_limit: limit for total number of all zeros in four channels in read 2. Default: 5. 
-non_T_limit: limit for allowing non-T bases at the very 3' ends when calling tail length, due to possible uridylation. Default: 2. 
-len_r2_T_filter: length of the begining region in read 2 (after 'dist2T') to check poly(T) (when 'check_pa_tail' is 'True'). Default: 8. 
-ratio_r2_T_filter: minmal percentage of T in the begining region of read 2 (defined by 'len_r2_T_filter') to check poly(T) (when 'check_pa_tail' is 'True'). Default: 0.7. 
-
-training_max: maximal number of clusters used in the training set. Default: 50000. 
-training_min: minimal number of clusters used in the training set. Default: 5000. 
-training_ratio: ratio of reads used for training, constrained by "training_max" and "training_min". Default: 0.01. 
-
-n_threads: number of cores to use for multiprocess, if too big, memory may fail. Default: 20. 
-chunk_lines: number of lines to allocate to each core to process, if too big, memory may fail. Default: 10000. 
-chunk: give a feedback for proceessing this number of lines. Default: 1000000. 
+1. r1_len: length of read1 (use 40 for v3, and 52 for v4). Default: 52.
+2. r2_len: length of read2. Default: 255. 
+3. check_pa_tail: whether to use read2 fastq file to filter out reads that don't have a poly(A) tail. Default: False.
+4. dis2T: the number of bases from the sequencing starts in read 2 to the 3' end of the mRNA (use 7 for v3, and 0 for v4). Default: 0. 
+5. strand: positive strand for Tail-seq and negative strand for PAL-seq. Default: -. 
+6. allow_back: whether to allow HMM to transition from a downstream state back to upstream state. Default: False. 
+7. mixed_model: whether to use a Gausian mixed model (if not, a simple Gausian model is used). Default: True.
+8. r1_nor_start: starting position of read1 for signal normalization (use 10 for v3, and 20 for v4). Default: 20.
+9. r1_nor_end: ending position of read1 for signal normalization (use 35 for v3, and 50 for v4). Default: 50. 
+10. bound: boundary for normalized log2 T_signal. Default: 5. 
+11. all_zero_limit: limit for total number of all zeros in four channels in read 2. Default: 5. 
+12. non_T_limit: limit for allowing non-T bases at the very 3' ends when calling tail length, due to possible uridylation. Default: 2. 
+13. len_r2_T_filter: length of the begining region in read 2 (after 'dist2T') to check poly(T) (when 'check_pa_tail' is 'True'). Default: 8. 
+14. ratio_r2_T_filter: minmal percentage of T in the begining region of read 2 (defined by 'len_r2_T_filter') to check poly(T) (when 'check_pa_tail' is 'True'). Default: 0.7. 
+15. training_max: maximal number of clusters used in the training set. Default: 50000. 
+16. training_min: minimal number of clusters used in the training set. Default: 5000. 
+17. training_ratio: ratio of reads used for training, constrained by "training_max" and "training_min". Default: 0.01. 
+18. n_threads: number of cores to use for multiprocess, if too big, memory may fail. Default: 20. 
+19. chunk_lines: number of lines to allocate to each core to process, if too big, memory may fail. Default: 10000. 
+20. chunk: give a feedback for proceessing this number of lines. Default: 1000000. 
 
 This script has three modes:
 > Mode 1:
